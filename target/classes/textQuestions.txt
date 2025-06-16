@@ -1,0 +1,26 @@
+What is the largest ocean?
+Pacific
+What is the smallest ocean?
+Arctic
+What is the longest river?
+Nile
+What planet is closest to the sun?
+Mercury
+What is the tallest mountain in the world?
+Mount Everest
+What gas do plants need for photosynthesis?
+Carbon dioxide
+What animal is known as the king of the jungle?
+Lion
+What is the largest planet in the solar system?
+Jupiter
+What is the fastest land animal?
+Cheetah
+What is the largest continent?
+Asia
+What is the base-2 number system called?
+Binary
+What does IDE stand for?
+Integrated Development Environment
+What is the term for a mistake in code?
+Bug

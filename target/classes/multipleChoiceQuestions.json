@@ -1,0 +1,202 @@
+[
+  {
+    "question": "When did the war of 1812 start?",
+    "options": [
+      "1912",
+      "2011",
+      "1811",
+      "1812"
+    ],
+    "answer": "D"
+  },
+  {
+    "question": "Who wrote the play 'Romeo and Juliet'?",
+    "options": [
+      "William Wordsworth",
+      "William Shakespeare",
+      "Charles Dickens",
+      "Jane Austen"
+    ],
+    "answer": "B"
+  },
+  {
+    "question": "What is the capital of France?",
+    "options": [
+      "Berlin",
+      "Madrid",
+      "Paris",
+      "Rome"
+    ],
+    "answer": "C"
+  },
+  {
+    "question": "Which planet is known as the Red Planet?",
+    "options": [
+      "Venus",
+      "Mars",
+      "Jupiter",
+      "Saturn"
+    ],
+    "answer": "B"
+  },
+  {
+    "question": "Who painted the Mona Lisa?",
+    "options": [
+      "Vincent van Gogh",
+      "Michelangelo",
+      "Leonardo da Vinci",
+      "Pablo Picasso"
+    ],
+    "answer": "C"
+  },
+  {
+    "question": "What is the smallest prime number?",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "5"
+    ],
+    "answer": "B"
+  },
+  {
+    "question": "Who developed the theory of evolution?",
+    "options": [
+      "Isaac Newton",
+      "Charles Darwin",
+      "Gregor Mendel",
+      "Galileo Galilei"
+    ],
+    "answer": "B"
+  },
+  {
+    "question": "What is the capital of Japan?",
+    "options": [
+      "Seoul",
+      "Beijing",
+      "Bangkok",
+      "Tokyo"
+    ],
+    "answer": "D"
+  },
+  {
+    "question": "What is the longest bone in the human body?",
+    "options": [
+      "Tibia",
+      "Humerus",
+      "Femur",
+      "Radius"
+    ],
+    "answer": "C"
+  },
+  {
+    "question": "Which element has the atomic number 6?",
+    "options": [
+      "Oxygen",
+      "Carbon",
+      "Nitrogen",
+      "Helium"
+    ],
+    "answer": "B"
+  },
+  {
+    "question": "What is the chemical symbol for gold?",
+    "options": [
+      "Au",
+      "Ag",
+      "Gd",
+      "Go"
+    ],
+    "answer": "A"
+  },
+  {
+    "question": "Who is the author of 1984 and Animal Farm?",
+    "options": [
+      "Aldous Huxley",
+      "George Orwell",
+      "Ray Bradbury",
+      "J.K Rowling"
+    ],
+    "answer": "B"
+  },
+  {
+    "question": "What year did the Titanic sink?",
+    "options": [
+      "1910",
+      "1912",
+      "1915",
+      "1920"
+    ],
+    "answer": "B"
+  },
+  {
+    "question": "Who painted the ceiling of the Sistine Chapel?",
+    "options": [
+      "Raphael",
+      "Michelangelo",
+      "Donatello",
+      "Leonardo da Vinci"
+    ],
+    "answer": "B"
+  },
+  {
+    "question": "Who discovered penicillin?",
+    "options": [
+      "Alexander Fleming",
+      "Marie Curie",
+      "Louis Pasteur",
+      "Gregor Mendel"
+    ],
+    "answer": "A"
+  },
+  {
+    "question": "What is the capital of Australia?",
+    "options": [
+      "Sydney",
+      "Melbourne",
+      "Canberra",
+      "Brisbane"
+    ],
+    "answer": "C"
+  },
+  {
+    "question": "Which U.S. document begins with 'We the People'?",
+    "options": [
+      "Declaration of Independence",
+      "Constitution",
+      "Bill of Rights",
+      "Emancipation Proclamation"
+    ],
+    "answer": "B"
+  },
+  {
+    "question": "Who wrote The Lord of the Rings?",
+    "options": [
+      "Ray Bradbury",
+      "J.R.R Tolkien",
+      "J.K Rowling",
+      "George R.R. Martin"
+    ],
+    "answer": "B"
+  },
+  {
+    "question": "What is the chemical formula for table salt?",
+    "options": [
+      "NaCl",
+      "KCl",
+      "H₂O",
+      "CO₂"
+    ],
+    "answer": "A"
+  },
+  {
+    "question": "Which blood type is known as the universal donor?",
+    "options": [
+      "A",
+      "B",
+      "AB",
+      "O negative"
+    ],
+    "answer": "D"
+  }
+]
