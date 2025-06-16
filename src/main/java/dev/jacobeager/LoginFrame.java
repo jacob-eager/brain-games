@@ -1,12 +1,26 @@
 package dev.jacobeager;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.Scanner;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
@@ -150,54 +164,63 @@ public class LoginFrame extends JFrame implements ActionListener {
 
 	private void checkLoginDetails(String username, String password) {
 		
-		Scanner scnr = new Scanner(System.in);
         boolean loginMatches = false;
+        boolean userExists = false;
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        File file = new File(FileSetup.getDirectoryPath() + "loginDetails.json");
+        LoginDetails loginAttempt = new LoginDetails(username, password);
+        
+        ArrayList<LoginDetails> knownLogins = new ArrayList<>();
+        
+        // Reads file to ArrayList
+        try {
+	        if (file.length() > 0) {
+	            knownLogins = objectMapper.readValue(file,
+	                    objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, LoginDetails.class));
+	        }
+	        else {
+	        		throw new EmptyFileException();
+	        }
+	    } 
+        catch (EmptyFileException e) {
+			FileSetup.validateFiles();
+			e.printStackTrace();
+		}
+	    catch (IOException e) {
+	        e.printStackTrace();
+	    }
+        
+        // Checks if username/password combo works
+        for (int i = 0; i < knownLogins.size(); ++i) {
+        		// Checks if username and password both match
+        		if (loginAttempt.equals(knownLogins.get(i))) {
+        			loginMatches = true;
+        			Main.titleFrame.setUsername(username);
+        			this.dispose();
+        			break;
+        		}
+        		// Checks if just username matches
+        		else if (loginAttempt.getUsername().equals(knownLogins.get(i).getUsername())) {
+        			userExists = true;
+        			break;
+        		}
+        }
+        
         
 		try {
-        	// Opens file
-			FileInputStream fileByteStream = new FileInputStream(FileSetup.getDirectoryPath() + "loginDetails.txt");
-            Scanner inFS = new Scanner(fileByteStream);
-            
-            if (!inFS.hasNextLine()) {
-            	inFS.close();
-            	throw new EmptyFileException();
-            }
-            
-            // Searches through list for valid username/password combination
-            while (inFS.hasNextLine()) {
-                if (inFS.hasNextLine()) { 
-                    String currUser = inFS.nextLine().trim();
-                    if (inFS.hasNextLine()) {
-                        String currPwd = inFS.nextLine().trim();
-                        if (username.equals(currUser) && password.equals(currPwd)) {
-                            loginMatches = true;
-                            Main.titleFrame.setUsername(username);
-                            inFS.close();
-                            this.dispose();
-                            break;
-                        }
-                    }
-                }
-            }
-
-            inFS.close(); 
-
+			
             /* If the login doesn't match anything in the file, 
             * asks user if they want to create a new account */
-                
-			if (!loginMatches) {
+			if (!userExists && !loginMatches) {
 				if (JOptionPane.showConfirmDialog(null,
 						"Login combination not found. Would you " + "like to create a new account?", "Warning",
 						JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-
-					FileWriter outputStream = new FileWriter(FileSetup.getDirectoryPath() + "loginDetails.txt", true);
-					BufferedWriter outFS = new BufferedWriter(outputStream);
-
-					outFS.write(username + "\n");
-					outFS.write(password + "\n");
-					outFS.close();
-					outputStream.close();
-
+					
+					// If the user wants to make a new account, adds to file
+					knownLogins.add(loginAttempt);
+					objectMapper.writeValue(file, knownLogins);
+					
 					Main.titleFrame.setUsername(username);
 					this.dispose();
 
@@ -205,16 +228,15 @@ public class LoginFrame extends JFrame implements ActionListener {
 					loginSuccessful = false;
 				}
 			}
-			scnr.close();
+			// Otherwise, asks user to try again
+			else if (userExists && !loginMatches) {
+				JOptionPane.showConfirmDialog(null, "Password incorrect, please try again.", "Warning",
+						JOptionPane.WARNING_MESSAGE);
+			}
 		}
         
         catch (FileNotFoundException e) {
         		System.out.println("File not found!");
-        		FileSetup.validateFiles();
-        }
-        
-        catch (EmptyFileException e) {
-        		System.out.println("File is empty!");
         		FileSetup.validateFiles();
         }
 		
@@ -222,6 +244,38 @@ public class LoginFrame extends JFrame implements ActionListener {
 			System.out.println("IO Exception");
 			e.printStackTrace();
 		}
+	}
+	
+	public static class LoginDetails {
+		
+		String username;
+		String password;
+		
+		public LoginDetails() {
+			
+		}
+		
+		public LoginDetails(String username, String password) {
+			this.username = username;
+			this.password = password;
+		}
+		
+		public String getUsername() {
+			return username;
+		}
+		
+		public void setUsername(String username) {
+			this.username = username;
+		}
+		
+		public String getPassword() {
+			return password;
+		}
+		
+		public void setPassword(String password) {
+			this.password = password;
+		}
+		
 	}
 	
 }

@@ -233,43 +233,11 @@ import javax.swing.*;
 		this.revalidate();
 		
 		// Adds high score to .txt file
-		addHighScore(Main.titleFrame.currUsername, score);
+		Leaderboard.addHighScore(Main.titleFrame.currUsername, score, "quizLeaderboard.json");
 	}
 	
-	/**
-	 * When the game ends, takes the score and the current user logged in and records
-	 * it to the leaderboard text file. 
-	 * 
-	 * @param user the username to be added
-	 * @param score the high score to be added
-	 */
-	
-	@Override
-	public void addHighScore(String user, int score) {
-		
-		try {
-			if (!new File(FileSetup.getDirectoryPath() + "quizLeaderboard.txt").exists()) {
-				throw new FileNotFoundException();
-			}
-			FileWriter outputStream = new FileWriter(FileSetup.getDirectoryPath() 
-					+ "quizLeaderboard.txt", true);
-			BufferedWriter outFS = new BufferedWriter(outputStream);
-			outFS.write(user + "\n");
-			outFS.write(score + "\n");
-			outFS.close();
-			outputStream.close();
-			
-		} 
-		catch (FileNotFoundException e) {
-			System.out.println("Leaderboard not found!");
-			FileSetup.validateFiles();
-			addHighScore(user, score);
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
 
-	}
+	
 	
 	/**
 	 * Stores a text question, and its answer.

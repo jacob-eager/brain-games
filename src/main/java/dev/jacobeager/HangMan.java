@@ -1,13 +1,32 @@
 package dev.jacobeager;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.Timer;
 
 
 /**
@@ -30,7 +49,7 @@ public class HangMan extends JFrame implements Game, ActionListener {
 	 * An ArrayList that keeps track of what characters the user has guessed. Cleared 
 	 * every time a new round starts.
 	 */
-	private static ArrayList<Character> usedChars = new ArrayList<Character>();
+	private ArrayList<Character> usedChars = new ArrayList<Character>();
 	
 	
 	/**
@@ -308,6 +327,8 @@ public class HangMan extends JFrame implements Game, ActionListener {
 		this.repaint();
 		this.revalidate();
 		
+		
+		
 	}
 	
 	/**
@@ -385,39 +406,10 @@ public class HangMan extends JFrame implements Game, ActionListener {
 		this.revalidate();
 		
 		// Adds score to leaderboard
-		addHighScore(Main.titleFrame.currUsername, score);
+		Leaderboard.addHighScore(Main.titleFrame.currUsername, score, "hangmanLeaderboard.json");
 		
 	}
 	
-	/**
-	 * When the game ends, takes the score and the current user logged in and records
-	 * it to the leaderboard text file. 
-	 * 
-	 * @param user the username to be added
-	 * @param score the high score to be added
-	 */
-	
-	@Override
-	public void addHighScore(String user, int score) {
-		try {
-			if (!new File(FileSetup.getDirectoryPath() + "hangmanLeaderboard.txt").exists()) {
-				throw new FileNotFoundException();
-			}
-			FileWriter outputStream = new FileWriter(FileSetup.getDirectoryPath() + "hangmanLeaderboard.txt", true);
-			BufferedWriter outFS = new BufferedWriter(outputStream);
-			outFS.write(user + "\n");
-			outFS.write(score + "\n");
-			outFS.close();
-			outputStream.close();
-			
-		} 
-		catch (FileNotFoundException e) {
-			FileSetup.validateFiles();
-			e.printStackTrace();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}
+
+
 }

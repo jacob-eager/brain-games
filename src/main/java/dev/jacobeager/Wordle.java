@@ -196,34 +196,7 @@ public class Wordle extends JFrame implements Game, ActionListener {
 		return true;
 	}
 	
-	/**
-	 * When the game ends, takes the score and the current user logged in and records
-	 * it to the leaderboard text file. 
-	 * 
-	 * @param user the username to be added
-	 * @param score the high score to be added
-	 */
-	@Override
-	public void addHighScore(String user, int score) {
-		try {
-			if (!new File(FileSetup.getDirectoryPath() + "wordleLeaderboard.txt").exists()) {
-				throw new FileNotFoundException();
-			}
-			FileWriter outputStream = new FileWriter(FileSetup.getDirectoryPath() + "wordleLeaderboard.txt", true);
-			BufferedWriter outFS = new BufferedWriter(outputStream);
-			outFS.write(user + "\n");
-			outFS.write(score + "\n");
-			outFS.close();
-			outputStream.close();
 
-		} catch (FileNotFoundException e) {
-			System.out.println("File not found!");
-			FileSetup.validateFiles();
-			addHighScore(user, score);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	
 	/**
@@ -369,7 +342,7 @@ public class Wordle extends JFrame implements Game, ActionListener {
 		this.revalidate();
 		
 		// Adds high score to leaderboard document
-		addHighScore(Main.titleFrame.currUsername, score);
+		Leaderboard.addHighScore(Main.titleFrame.currUsername, score, "wordleLeaderboard.json");
 		
 	}
 

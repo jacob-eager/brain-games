@@ -18,7 +18,6 @@ import javax.swing.JTextArea;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-
 /**
  * This class is used to gather text from the leaderboard files and display them in a new GUI.
  * 
@@ -29,6 +28,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SuppressWarnings("serial")
 public class Leaderboard extends JFrame {
 
+	ArrayList<HighScore> wordleScores;
+	
+	ArrayList<HighScore> hangmanScores;
+	
+	ArrayList<HighScore> quizBowlScores;
+	
+	
 	/**
 	 * Constructor that creates the GUI.
 	 */
@@ -192,6 +198,11 @@ public class Leaderboard extends JFrame {
 			// No-args constructor needed for Jackson
 		}
 		
+		public HighScore(String name, int score) {
+			this.name = name;
+			this.score = score;
+		}
+		
 		public String getName() {
 	        return name;
 	    }
@@ -218,6 +229,47 @@ public class Leaderboard extends JFrame {
 		public int compareTo(HighScore other) {
 			return Integer.compare(other.score, this.score);
 		}
-
 	}
+	
+	/**
+	 * When the game ends, takes the score and the current user logged in and records
+	 * it to the leaderboard text file. 
+	 * 
+	 * @param user the username to be added
+	 * @param score the high score to be added
+	 */
+	
+	
+	public static void addHighScore(String user, int score, String fileName) {
+		
+		try {
+			ObjectMapper objectMapper = new ObjectMapper();
+			File file = new File(FileSetup.getDirectoryPath() + fileName);
+			HighScore currScore = new HighScore(user, score);
+			ArrayList<HighScore> highScores = new ArrayList<>();
+
+			// Checks if file is empty, and if it's not, reads to array
+			if (file.length() > 0) {
+				highScores = objectMapper.readValue(file,
+						objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, HighScore.class));
+			} else {
+				throw new EmptyFileException();
+			}
+
+			// Adds score and re-writes file
+			highScores.add(currScore);
+
+			objectMapper.writeValue(file, highScores);
+
+		} catch (FileNotFoundException e) {
+			FileSetup.validateFiles();
+			e.printStackTrace();
+		} catch (EmptyFileException e) {
+			FileSetup.validateFiles();
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
