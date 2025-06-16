@@ -1,14 +1,35 @@
 package dev.jacobeager;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This class creates a new instance of a quiz game.
@@ -88,52 +109,23 @@ import javax.swing.*;
 	private MultipleChoiceQuestion getMultipleChoiceQuestion() {
 		
 		Random r = new Random();
-		
-		String question = "";
-		String answers = "";
-		char correctAnswer = 'Z'; // Impossible answer for debug purposes
-		char[] possibleAnswers = {'A','B','C','D'};
-		
-		// Checks if the array of multiple choice questions is filled, and if it's empty, fills it
+
+		// Checks if the array of text questions is filled, and if it's empty, fills it
 		if (multQuestions.size() == 0) {
 			try {
-				FileInputStream fileByteStream = new FileInputStream(FileSetup.getDirectoryPath()
-						+ "multipleChoiceQuestions.txt");
-				Scanner inFS = new Scanner(fileByteStream);
-				
-				// Checks if file is empty
-				if (!inFS.hasNextLine()) {
-					inFS.close();
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				File file = new File(FileSetup.getDirectoryPath() + "multipleChoiceQuestions.json");
+
+				if (file.length() > 0) {
+					multQuestions = objectMapper.readValue(file,
+							objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, 
+									MultipleChoiceQuestion.class));
+				} 
+				else {
 					throw new EmptyFileException();
 				}
-				
-				while (inFS.hasNextLine()) {
-					answers = "";
-					
-					// Gathers question
-					question = inFS.nextLine();
-					
-					// Gathers possible answers
-					for (int i = 0; i < 4; ++i) {
-						if (inFS.hasNextLine()) {
-							answers += possibleAnswers[i] + ". " + inFS.nextLine() + "\n";
-						}
-						else {
-							// If there are less than 4 answers, throws exception
-							inFS.close();
-							throw new InvalidFormatException();
-						}
-					}
-					if (inFS.hasNextLine()) {
-						
-						// Gathers correct answer character
-						correctAnswer = inFS.nextLine().charAt(0);
-						
-						// Only adds question if it has an answer
-						multQuestions.add(new MultipleChoiceQuestion(question, answers, correctAnswer));
-					}
-				}
-				inFS.close();
+
 			}
 			catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -143,7 +135,15 @@ import javax.swing.*;
 				e.printStackTrace();
 				return null;
 			}
-			catch (InvalidFormatException e) {
+			catch (StreamReadException e) {
+				e.printStackTrace();
+				return null;
+			} 
+			catch (DatabindException e) {
+				e.printStackTrace();
+				return null;
+			} 
+			catch (IOException e) {
 				e.printStackTrace();
 				return null;
 			}
@@ -151,6 +151,7 @@ import javax.swing.*;
 		
 		// Selects a random question from the ArrayList
 		return multQuestions.get(r.nextInt(0, multQuestions.size()));
+		
 		
 	}
 	/**
@@ -160,37 +161,22 @@ import javax.swing.*;
 	private TextQuestion getTextQuestion() {
 		
 		Random r = new Random();
-		
-		String question = "";
-		String answer = "";
 
 		// Checks if the array of text questions is filled, and if it's empty, fills it
 		if (textQuestions.size() == 0) {
 			try {
-				FileInputStream fileByteStream = new FileInputStream(FileSetup.getDirectoryPath() 
-						+ "textQuestions.txt");
-				Scanner inFS = new Scanner(fileByteStream);
-				
-				// Checks if file is empty
-				if (!inFS.hasNextLine()) {
-					inFS.close();
+
+				ObjectMapper objectMapper = new ObjectMapper();
+				File file = new File(FileSetup.getDirectoryPath() + "textQuestions.json");
+
+				if (file.length() > 0) {
+					textQuestions = objectMapper.readValue(file,
+							objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, TextQuestion.class));
+				} 
+				else {
 					throw new EmptyFileException();
 				}
-				// Gets questions and answers
-				while (inFS.hasNextLine()) {
-					question = inFS.nextLine();
-					if (inFS.hasNextLine()) {
-						answer = inFS.nextLine();
-						textQuestions.add(new TextQuestion(question, answer));
-					}
-					else {
-						inFS.close();
-						
-						// Throws exception if a question is missing an answer
-						throw new InvalidFormatException();
-					}
-				}
-				inFS.close();
+
 			}
 			catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -200,7 +186,15 @@ import javax.swing.*;
 				e.printStackTrace();
 				return null;
 			}
-			catch (InvalidFormatException e) {
+			catch (StreamReadException e) {
+				e.printStackTrace();
+				return null;
+			} 
+			catch (DatabindException e) {
+				e.printStackTrace();
+				return null;
+			} 
+			catch (IOException e) {
 				e.printStackTrace();
 				return null;
 			}
@@ -244,7 +238,35 @@ import javax.swing.*;
 	 * @author Jacob Eager
 	 * @version 1.0
 	 */
-	private record TextQuestion(String question, String answer) implements Question {
+	public static class TextQuestion implements Question {
+		
+		String question;
+		String answer;
+		
+		public TextQuestion() {
+			
+		}
+		
+		public TextQuestion(String question, String answer) {
+			this.question = question;
+			this.answer = answer;
+		}
+		
+		public String getQuestion() {
+			return question;
+		}
+		
+		public void setQuestion(String question) {
+			this.question = question;
+		}
+		
+		public String getAnswer() {
+			return answer;
+		}
+		
+		public void setAnswer(String answer) {
+			this.answer = answer;
+		}
 		
 		@Override
 		public void displayQuestion(QuizBowl frame) {
@@ -323,11 +345,53 @@ import javax.swing.*;
 	 * @author Jacob Eager
 	 * @version 1.0
 	 */
-	private record MultipleChoiceQuestion(String question, String answers, 
-			char correctAnswer) implements Question {
+	public static class MultipleChoiceQuestion implements Question {
 
+		String question;
+		
+		String[] options;
+		
+		char answer;
+		
+		public MultipleChoiceQuestion() {
+			
+		}
+		
+		public String getQuestion() {
+			return question;
+		}
+		
+		public void setQuestion(String question) {
+			this.question = question;
+		}
+		
+		public String[] getOptions() {
+			return options;
+		}
+		
+		public void setOptions(String[] options) {
+			this.options = options;
+		}
+		
+		public char getAnswer() {
+			return answer;
+		}
+		
+		public void setAnswer(char answer) {
+			this.answer = answer;
+		}
+		
 		@Override
 		public void displayQuestion(QuizBowl frame) {
+			
+			char[] letters = new char[] {'A', 'B', 'C', 'D'};
+			
+			String optionsText = "";
+			
+			// Sets options to a string to put in a text box
+			for (int i = 0; i < options.length; ++i) {
+				optionsText += letters[i] + ". " + options[i] + "\n";
+			}
 			
 			// Clears former contents and sets layout
 			frame.upperPanel.removeAll();
@@ -349,7 +413,7 @@ import javax.swing.*;
 			qAndA.add(questionLabel, constraints);
 			
 			// Displays answer
-			JTextArea answersLabel = new JTextArea(answers);
+			JTextArea answersLabel = new JTextArea(optionsText);
 			answersLabel.setFont(new Font("Arial", Font.PLAIN, 20));
 			answersLabel.setForeground(Color.WHITE);
 			answersLabel.setEditable(false);
@@ -366,7 +430,7 @@ import javax.swing.*;
 			frame.lowerPanel.setLayout(new GridLayout(2, 2));
 			
 			// Adds the four buttons to the grid
-			for (char option : new char[] {'A', 'B', 'C', 'D'}) {
+			for (char option : letters) {
 				
 				// Formats button
 			    JButton button = new JButton(String.valueOf(option));
@@ -375,8 +439,8 @@ import javax.swing.*;
 			    button.setForeground(Color.WHITE);
 			    
 			    // Sets color of button depending on letter
-			    switch (option) {
-			    
+				switch (option) {
+
 				case 'A' -> button.setBackground(Color.decode("#eb21b3c"));
 
 				case 'B' -> button.setBackground(Color.decode("#1368ce"));
@@ -385,14 +449,14 @@ import javax.swing.*;
 
 				case 'D' -> button.setBackground(Color.decode("#ffa602"));
 
-			    }
+				}
 			    
 				// Adds action listener and logic
 				button.addActionListener(new ActionListener() {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						if (option == correctAnswer) {
+						if (option == answer) {
 							++frame.score;
 							frame.generateQuestion(); // Continues game
 						} else {

@@ -27,8 +27,9 @@ public class FileSetup {
 	public static void validateFiles() {
 		
 		
-		String[] fileNames = {"hangmanLeaderboard", "hangman", "loginDetails", "multipleChoiceQuestions",
-				"quizLeaderboard", "textQuestions", "wordle", "wordleLeaderboard"};
+		String[] fileNames = {"hangmanLeaderboard.json", "hangman.txt", "loginDetails.json", 
+				"multipleChoiceQuestions.json", "quizLeaderboard.json", "textQuestions.json", 
+				"wordle.txt", "wordleLeaderboard.json"};
 				
 		String dirPath = getDirectoryPath();
 		
@@ -48,7 +49,7 @@ public class FileSetup {
 			// Checks if each file exists and has text, writes to it if not
 			for (String fileName : fileNames) {
 
-				tempFile = new File(dirPath + fileName + ".txt");
+				tempFile = new File(dirPath + fileName);
 
 				if (!tempFile.exists()) {
 					if (!tempFile.createNewFile()) {
@@ -56,7 +57,7 @@ public class FileSetup {
 					}
 				} 
 				if (tempFile.length() == 0) {
-					writeToFile(dirPath + fileName + ".txt", fileName);
+					writeToFile(dirPath + fileName, fileName);
 				}
 
 			}
@@ -73,7 +74,7 @@ public class FileSetup {
 	private static void writeToFile(String filePath, String fileName) {
 		
 		try {
-			InputStream inStream = FileSetup.class.getResourceAsStream("/" + fileName + ".txt");
+			InputStream inStream = FileSetup.class.getResourceAsStream("/" + fileName);
 			Scanner inFS = new Scanner(inStream);
 			FileWriter outputStream = new FileWriter(filePath, true);
 			BufferedWriter outFS = new BufferedWriter(outputStream);
