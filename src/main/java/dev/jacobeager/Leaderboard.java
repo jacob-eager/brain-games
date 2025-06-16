@@ -3,13 +3,19 @@ package dev.jacobeager;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.regex.Pattern;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
@@ -44,7 +50,7 @@ public class Leaderboard extends JFrame {
 		
 		// Adds text area to scroll pane
 		JTextArea quizBowlText = new JTextArea();
-		quizBowlText.setText(getScoreboardText(FileSetup.getDirectoryPath() + "quizLeaderboard.txt"));
+		quizBowlText.setText(getScoreboardText(FileSetup.getDirectoryPath() + "quizLeaderboard.json"));
 		quizBowlText.setCaretColor(Color.WHITE);
 		quizBowlText.setCaretPosition(0);
 		quizBowlText.setEditable(false);
@@ -64,11 +70,9 @@ public class Leaderboard extends JFrame {
 		scoreLabel2.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
 		hangmanPanel.add(scoreLabel2);
 		
-		
-		
 		// Adds text area to scroll pane
 		JTextArea hangmanText = new JTextArea();
-		hangmanText.setText(getScoreboardText(FileSetup.getDirectoryPath() + "hangmanLeaderboard.txt"));
+		hangmanText.setText(getScoreboardText(FileSetup.getDirectoryPath() + "hangmanLeaderboard.json"));
 		hangmanText.setCaretColor(Color.WHITE);
 		hangmanText.setCaretPosition(0);
 		hangmanText.setEditable(false);
@@ -90,7 +94,7 @@ public class Leaderboard extends JFrame {
 		
 		// Adds text area to scroll pane
 		JTextArea wordleText = new JTextArea(0,30);
-		wordleText.setText(getScoreboardText(FileSetup.getDirectoryPath() + "wordleLeaderboard.txt"));
+		wordleText.setText(getScoreboardText(FileSetup.getDirectoryPath() + "wordleLeaderboard.json"));
 		wordleText.setCaretColor(Color.WHITE);
 		wordleText.setCaretPosition(0);
 		wordleText.setEditable(false);
@@ -121,68 +125,38 @@ public class Leaderboard extends JFrame {
 	private String getScoreboardText(String filePath) {
 		
 		// ArrayList for HighScore objects (contain user and score)
-		ArrayList<HighScore> scores = new ArrayList<HighScore>();
-		
-		String user;
-		String scoreNum;
+		ArrayList<HighScore> scores;
 		
 		String text = "";
 		
+		File file = new File(filePath);
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		
 		try {
-			FileInputStream fileByteStream = new FileInputStream(filePath);
-			Scanner inFS = new Scanner(fileByteStream);
-			
 			// Checks if leaderboard file is empty
-			if (!inFS.hasNextLine()) {
-				inFS.close();
+			if (file.length() == 0) {
 				throw new EmptyFileException();
 			}
+			scores = objectMapper.readValue(file, objectMapper.getTypeFactory()
+					.constructCollectionType(ArrayList.class, HighScore.class));
 			
-			while (inFS.hasNextLine()) {
-				user = inFS.nextLine().trim();
-				// Checks for valid username
-				if (LoginFrame.validateUsername(user)) {
-					if (inFS.hasNextLine()) {
-						scoreNum = inFS.nextLine().trim();
-						
-						// Checks for valid score and adds both to array
-						if (Pattern.matches("\\d{1,}", scoreNum)) {
-							scores.add(new HighScore(user,Integer.parseInt(scoreNum)));
-							text = sortScores(scores);
-						}
-						else {
-							inFS.close();
-							// Throws exception if no score
-							throw new InvalidFormatException();
-						}
-					}
-				}
-				else {
-					inFS.close();
-					// Throws exception if username is invalid
-					throw new InvalidFormatException();
-				}
-			}
+			text = sortScores(scores);
 			
-			inFS.close();
-		}
-		catch (EmptyFileException e) {
-			System.out.println(filePath + " was empty!");
-			FileSetup.validateFiles();
-			return getScoreboardText(filePath);
-		}
-		catch (InvalidFormatException e) {
-			text = "Leaderboard file is incorrectly formatted";
 		}
 		catch (FileNotFoundException e) {
-			System.out.println(filePath + " was not found!");
-			FileSetup.validateFiles();
-			return getScoreboardText(filePath);
-		}
-		catch (Exception e) {
-			text = "Unknown error occurred!";
 			e.printStackTrace();
+			text = "File not found!";
 		}
+		catch (EmptyFileException e) {
+			e.printStackTrace();
+			text = "File is empty!";
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			text = "IO Exception!";
+		} 
 		
 		return text;
 	}
@@ -203,17 +177,40 @@ public class Leaderboard extends JFrame {
 	}
 
 	/**
-	 * This record is used to make objects which easily keep high scores and their associated users together. 
+	 * This inner class is used to make objects which easily keep high scores and their associated users together. 
 	 * 
 	 * @author Jacob Eager
 	 * @version 1.0
 	 */
 
-	private record HighScore(String user, int score) implements Comparable<HighScore> {
+	public static class HighScore implements Comparable<HighScore> {
+		
+		String name;
+		int score;
+		
+		public HighScore() {
+			// No-args constructor needed for Jackson
+		}
+		
+		public String getName() {
+	        return name;
+	    }
+
+	    public void setName(String name) {
+	        this.name = name;
+	    }
+
+	    public int getScore() {
+	        return score;
+	    }
+
+	    public void setScore(int score) {
+	        this.score = score;
+	    }
 		
 		@Override
 		public String toString() {
-			String stringRep = user + ": " + score;
+			String stringRep = name + ": " + score;
 			return stringRep;
 		}
 
