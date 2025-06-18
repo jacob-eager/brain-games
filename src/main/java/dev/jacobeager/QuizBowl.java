@@ -230,8 +230,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 		Leaderboard.addHighScore(Main.titleFrame.currUsername, score, "quizLeaderboard.json");
 	}
 	
-
-	
 	
 	/**
 	 * Stores a text question, and its answer.
@@ -299,6 +297,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 			Action enter = new AbstractAction() {
 				public void actionPerformed(ActionEvent e) {
 					if (answerBox.getText().equalsIgnoreCase(answer)) {
+						Game.playCorrectAnswerSound();
 						frame.score++;
 						frame.generateQuestion();
 					} 
@@ -319,6 +318,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (answerBox.getText().equalsIgnoreCase(answer)) {
+						Game.playCorrectAnswerSound();
 						frame.score++;
 						frame.generateQuestion();
 					} 
@@ -457,6 +457,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						if (option == answer) {
+							Game.playCorrectAnswerSound();
 							++frame.score;
 							frame.generateQuestion(); // Continues game
 						} else {

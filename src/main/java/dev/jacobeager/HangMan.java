@@ -307,6 +307,9 @@ public class HangMan extends JFrame implements Game, ActionListener {
 	 */
 	private void win() {
 		
+		// Plays sound for win
+		Game.playCorrectAnswerSound();
+		
 		// Updates score and resets fields
 		score += 1;
 		incorrectGuesses = 0;

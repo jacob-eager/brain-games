@@ -234,10 +234,16 @@ public class Wordle extends JFrame implements Game, ActionListener {
 				for (int i = 25; i < 30; ++i) {
 					guessBoxes[i].setBackground(Color.GREEN);
 				}
+				
+				// Plays game win sound before pause
+				Game.playCorrectAnswerSound();
+				
+				// Waits a couple seconds before resetting to show success
 				Timer timer = new Timer(2000, new ActionListener() {
 				    public void actionPerformed(ActionEvent e) {
-				    	++score;
-						restartGame();
+				    		++score;
+				    		restartGame();
+					
 				    }
 				});
 				timer.setRepeats(false);
@@ -260,6 +266,10 @@ public class Wordle extends JFrame implements Game, ActionListener {
 		}
 		// Wins game if word is guessed
 		if (guess.equals(currWord)) {
+			
+			// Plays game win sound before pause
+			Game.playCorrectAnswerSound();
+			
 			// Waits a couple seconds before resetting to show success
 			Timer timer = new Timer(2000, new ActionListener() {
 			    public void actionPerformed(ActionEvent e) {

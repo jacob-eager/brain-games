@@ -8,7 +8,14 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -67,7 +74,31 @@ public class GameOverScreen extends JPanel implements ActionListener {
 		constraints.gridy = 2;
 		this.add(playAgain, constraints);
 		
+		// Plays game over sound
+		playSound();
 		
+	}
+
+	private void playSound() {
+		
+		try {
+			AudioInputStream gameOverSound = AudioSystem.getAudioInputStream(
+					new File("src\\main\\resources\\game_over.wav"));
+			Clip clip = AudioSystem.getClip();
+			clip.open(gameOverSound);
+			clip.start();
+		} 
+		catch (UnsupportedAudioFileException e) {
+			FileSetup.validateFiles();
+			e.printStackTrace();
+		} 
+		catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			FileSetup.validateFiles();
+			e.printStackTrace();
+		}
 	}
 
 	@Override
