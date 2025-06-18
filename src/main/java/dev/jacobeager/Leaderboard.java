@@ -28,17 +28,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SuppressWarnings("serial")
 public class Leaderboard extends JFrame {
 
-	ArrayList<HighScore> wordleScores;
+	public static ArrayList<HighScore> wordleScores;
 	
-	ArrayList<HighScore> hangmanScores;
+	public static ArrayList<HighScore> hangmanScores;
 	
-	ArrayList<HighScore> quizBowlScores;
+	public static ArrayList<HighScore> quizBowlScores;
 	
 	
 	/**
 	 * Constructor that creates the GUI.
 	 */
 	public Leaderboard() {
+		
+		// Fills arrays of high scores from .json files
+		fillArrays();
 		
 		// Formats frame
 		this.setSize(new Dimension (400, 500));
@@ -56,7 +59,7 @@ public class Leaderboard extends JFrame {
 		
 		// Adds text area to scroll pane
 		JTextArea quizBowlText = new JTextArea();
-		quizBowlText.setText(getScoreboardText(FileSetup.getDirectoryPath() + "quizLeaderboard.json"));
+		quizBowlText.setText(getScoreboardText("quiz bowl"));
 		quizBowlText.setCaretColor(Color.WHITE);
 		quizBowlText.setCaretPosition(0);
 		quizBowlText.setEditable(false);
@@ -78,7 +81,7 @@ public class Leaderboard extends JFrame {
 		
 		// Adds text area to scroll pane
 		JTextArea hangmanText = new JTextArea();
-		hangmanText.setText(getScoreboardText(FileSetup.getDirectoryPath() + "hangmanLeaderboard.json"));
+		hangmanText.setText(getScoreboardText("hangman"));
 		hangmanText.setCaretColor(Color.WHITE);
 		hangmanText.setCaretPosition(0);
 		hangmanText.setEditable(false);
@@ -100,7 +103,7 @@ public class Leaderboard extends JFrame {
 		
 		// Adds text area to scroll pane
 		JTextArea wordleText = new JTextArea(0,30);
-		wordleText.setText(getScoreboardText(FileSetup.getDirectoryPath() + "wordleLeaderboard.json"));
+		wordleText.setText(getScoreboardText("wordle"));
 		wordleText.setCaretColor(Color.WHITE);
 		wordleText.setCaretPosition(0);
 		wordleText.setEditable(false);
@@ -128,60 +131,82 @@ public class Leaderboard extends JFrame {
 	 * @param filePath the path of the leaderboard file
 	 * @return a text representation of the sorted leaderboard
 	 */
-	private String getScoreboardText(String filePath) {
+	private String getScoreboardText(String game) {
 		
-		// ArrayList for HighScore objects (contain user and score)
+		String text = "";
+		
 		ArrayList<HighScore> scores;
 		
-		String text = "";
+		switch (game) {
 		
-		File file = new File(filePath);
-		
-		ObjectMapper objectMapper = new ObjectMapper();
-		
-		
-		try {
-			// Checks if leaderboard file is empty
-			if (file.length() == 0) {
-				throw new EmptyFileException();
-			}
-			scores = objectMapper.readValue(file, objectMapper.getTypeFactory()
-					.constructCollectionType(ArrayList.class, HighScore.class));
-			
-			text = sortScores(scores);
-			
+			case ("wordle"):
+				scores = wordleScores;
+				break;
+			case ("quiz bowl"):
+				scores = quizBowlScores;
+				break;
+			case ("hangman"):
+				scores = hangmanScores;
+				break;
+			default:
+				scores = null;
 		}
-		catch (FileNotFoundException e) {
-			e.printStackTrace();
-			text = "File not found!";
-		}
-		catch (EmptyFileException e) {
-			e.printStackTrace();
-			text = "File is empty!";
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-			text = "IO Exception!";
-		} 
 		
-		return text;
-	}
-	
-	/**
-	 * Sorts HighScores from highest to lowest.
-	 * @param scores list of scores and users
-	 * @return text of sorted scores and users
-	 */
-	private String sortScores (ArrayList<HighScore> scores) {
-		String text = "";
-		scores.sort(null);
+
 		
 		for (int i = 0; i < scores.size(); ++i) {
 			text += (i+1) + ". " + scores.get(i).toString() + "\n";
 		}
+		
+		
 		return text;
 	}
+	
+	public static void fillArrays() {
 
+
+		String[] fileNames = {"quizLeaderboard.json",
+				"wordleLeaderboard.json",
+				"hangmanLeaderboard.json"};
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		try {
+			for (String fileName : fileNames) {
+				// Creates an object for the respective leaderboard file and checks if file is empty
+				File file = new File(FileSetup.getDirectoryPath() + fileName);
+				if (file.length() == 0) {
+					throw new EmptyFileException();
+					
+				}
+				// Fills out each array
+				switch (fileName) {
+					case ("quizLeaderboard.json"):
+						quizBowlScores = objectMapper.readValue(file,
+								objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, HighScore.class));
+						quizBowlScores.sort(null);
+						break;
+					case ("wordleLeaderboard.json"):
+						wordleScores = objectMapper.readValue(file,
+								objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, HighScore.class));
+						wordleScores.sort(null);
+						break;
+					case ("hangmanLeaderboard.json"):
+						hangmanScores = objectMapper.readValue(file,
+								objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, HighScore.class));
+						hangmanScores.sort(null);
+						break;
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (EmptyFileException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * This inner class is used to make objects which easily keep high scores and their associated users together. 
 	 * 

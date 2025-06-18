@@ -18,8 +18,13 @@ public class FileSetup {
 	// Begins the file setup process
 	public static void startSetup() {
 
+		// Detects OS and validates files
 		detectOS();
 		validateFiles();
+		
+		/* Fills arrays of high scores (must be done at launch in case user 
+		 * plays a game before checking the leaderboard) */
+		Leaderboard.fillArrays();
 
 	}
 	
