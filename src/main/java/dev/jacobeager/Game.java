@@ -26,7 +26,7 @@ public interface Game {
 	
 	
 	/**
-	 * Plays correct.mp3
+	 * Plays correct answer sound when the user guesses the word correctly.
 	 */
 	public static void playCorrectAnswerSound() {
 		try {
