@@ -391,6 +391,12 @@ public class HangMan extends JFrame implements Game, ActionListener {
 	@Override
 	public void gameOver() {
 		
+		// Adds score to leaderboard
+		Leaderboard.addHighScore(Main.titleFrame.currUsername, score, "hangmanLeaderboard.json");
+		
+		// Updates leaderboard array with new score
+		Leaderboard.fillArrays();
+		
 		// Clears current layout
 		this.remove(bottomPanel);
 		this.remove(topPanel);
@@ -408,8 +414,7 @@ public class HangMan extends JFrame implements Game, ActionListener {
 		this.repaint();
 		this.revalidate();
 		
-		// Adds score to leaderboard
-		Leaderboard.addHighScore(Main.titleFrame.currUsername, score, "hangmanLeaderboard.json");
+
 		
 	}
 	

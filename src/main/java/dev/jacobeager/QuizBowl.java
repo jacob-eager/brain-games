@@ -212,6 +212,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 	@Override
 	public void gameOver() {
 		
+		// Adds high score to .json file
+		Leaderboard.addHighScore(Main.titleFrame.currUsername, score, "quizLeaderboard.json");
+		
+		// Updates leaderboard array with new score
+		Leaderboard.fillArrays();
+		
 		// Removes previous formatting
 		this.remove(upperPanel);
 		this.remove(lowerPanel);
@@ -226,8 +232,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 		this.repaint();
 		this.revalidate();
 		
-		// Adds high score to .txt file
-		Leaderboard.addHighScore(Main.titleFrame.currUsername, score, "quizLeaderboard.json");
+
 	}
 	
 	

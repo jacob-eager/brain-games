@@ -20,6 +20,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 
 /**
@@ -42,6 +43,8 @@ public class GameOverScreen extends JPanel implements ActionListener {
 	 */
 	public GameOverScreen(int score, Game game) {
 		
+		// Updates high scores
+		
 		// Sets current game for play again button
 		currGame = game;
 		
@@ -57,10 +60,24 @@ public class GameOverScreen extends JPanel implements ActionListener {
 		constraints.insets = new Insets(10,10,10,10);
 		this.add(gameOver, constraints);
 		
+		// Top scores label
+		JLabel topScoresLabel = new JLabel("Top Scores:");
+		topScoresLabel.setFont(new Font("Arial", Font.BOLD, 18));
+		constraints.gridy = 1;
+		this.add(topScoresLabel, constraints);
+		
+		// Displays top scores
+		JTextArea topScores = new JTextArea();
+		topScores.setText(Leaderboard.getTopScores(game));
+		topScores.setBackground(this.getBackground());
+		topScores.setEditable(false);
+		constraints.gridy = 2;
+		this.add(topScores, constraints);
+		
 		// Displays score
 		JLabel yourScore = new JLabel("Your score: " + score);
 		yourScore.setFont(new Font("Arial", Font.BOLD, 20));
-		constraints.gridy = 1;
+		constraints.gridy = 3;
 		this.add(yourScore, constraints);
 		
 		// Play again button
@@ -71,7 +88,7 @@ public class GameOverScreen extends JPanel implements ActionListener {
 		playAgain.setPreferredSize(new Dimension(90, 50));
 		playAgain.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
 		playAgain.setBackground(Color.decode("#B0C4DE"));
-		constraints.gridy = 2;
+		constraints.gridy = 4;
 		this.add(playAgain, constraints);
 		
 		// Plays game over sound

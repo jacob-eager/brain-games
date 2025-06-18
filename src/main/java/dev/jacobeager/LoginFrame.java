@@ -251,6 +251,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 		String username;
 		String password;
 		
+		// Getters, setters, and empty constructor necessary for Jackson
 		public LoginDetails() {
 			
 		}

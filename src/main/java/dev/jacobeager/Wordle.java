@@ -338,6 +338,12 @@ public class Wordle extends JFrame implements Game, ActionListener {
 	@Override
 	public void gameOver() {
 		
+		// Adds high score to leaderboard document
+		Leaderboard.addHighScore(Main.titleFrame.currUsername, score, "wordleLeaderboard.json");
+		
+		// Updates leaderboard array with new score
+		Leaderboard.fillArrays();
+		
 		// Clears current content
 		this.remove(centerLock);
 		
@@ -351,8 +357,7 @@ public class Wordle extends JFrame implements Game, ActionListener {
 		this.repaint();
 		this.revalidate();
 		
-		// Adds high score to leaderboard document
-		Leaderboard.addHighScore(Main.titleFrame.currUsername, score, "wordleLeaderboard.json");
+
 		
 	}
 

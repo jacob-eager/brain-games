@@ -131,7 +131,7 @@ public class Leaderboard extends JFrame {
 	 * @param filePath the path of the leaderboard file
 	 * @return a text representation of the sorted leaderboard
 	 */
-	private String getScoreboardText(String game) {
+	private static String getScoreboardText(String game) {
 		
 		String text = "";
 		
@@ -152,12 +152,35 @@ public class Leaderboard extends JFrame {
 				scores = null;
 		}
 		
-
-		
 		for (int i = 0; i < scores.size(); ++i) {
 			text += (i+1) + ". " + scores.get(i).toString() + "\n";
 		}
 		
+		return text;
+	}
+	
+	// Gets top 5 scores, for use in GameOverScreen
+	public static String getTopScores(Game game) {
+		String text = "";
+		
+		ArrayList<HighScore> scores;
+		
+		if (game instanceof Wordle) {
+			scores = wordleScores;
+		}
+		else if (game instanceof QuizBowl) {
+			scores = quizBowlScores;
+		}
+		else if (game instanceof HangMan) {
+			scores = hangmanScores;
+		}
+		else {
+			scores = null;
+		}
+		
+		for (int i = 0; i < 5; ++i) {
+			text += (i+1) + ". " + scores.get(i).toString() + "\n";
+		}
 		
 		return text;
 	}
@@ -219,8 +242,9 @@ public class Leaderboard extends JFrame {
 		String name;
 		int score;
 		
+		// No-args constructor and getters/setters needed for Jackson
 		public HighScore() {
-			// No-args constructor needed for Jackson
+			
 		}
 		
 		public HighScore(String name, int score) {
@@ -283,7 +307,6 @@ public class Leaderboard extends JFrame {
 
 			// Adds score and re-writes file
 			highScores.add(currScore);
-
 			objectMapper.writeValue(file, highScores);
 
 		} catch (FileNotFoundException e) {
